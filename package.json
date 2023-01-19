@@ -1,0 +1,48 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "egg": "^3.9.1",
+    "egg-sequelize": "^6.0.0",
+    "js-md5": "^0.7.3",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.8.0",
+    "qiniu": "^7.8.0",
+    "sequelize": "^6.28.0",
+    "svg-captcha": "^1.4.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "autod": "autod",
+    "lint": "eslint .",
+    "test": "egg-bin test",
+    "cov": "egg-bin cov",
+    "ci": "npm run lint && NODE_ENV=test npx sequelize db:migrate && npm run cov",
+    "dev": "egg-bin dev"
+  },
+  "ci": {
+    "version": "8"
+  },
+  "eslintIgnore": [
+    "coverage",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "author": "",
+  "private": true,
+  "devDependencies": {
+    "egg-bin": "^5.9.0",
+    "sequelize-cli": "^6.5.2"
+  }
+}
