@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Deploy
       # 因为构建之后，需要把代码上传到服务器上，所以需要连接到ssh，并且做一个拷贝操作
-        uses: cross-the-world/scp-pipeline@master
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
         env:
           WELCOME: "ssh scp ssh pipelines"
           LASTSSH: "Doing something after copying"
@@ -20,6 +20,11 @@ jobs:
           user: ${{ secrets.USER_NAME }}
           pass: ${{ secrets.USER_PASS }}
           connect_timeout: 10s
-          local: './**'
-          remote: /home/www/pzhuweb/backserver
+          first_ssh: |
+            rm -rf /home/www/pzhuweb/backserver
+            mkdir -p /home/www/pzhuweb/backserver
+          scp: |
+            ./** => /home/www/pzhuweb/backserver
+          last_ssh: |
+            echo $LASTSSH
 
