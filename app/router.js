@@ -2,8 +2,6 @@
 
 module.exports = app => {
   const { router, controller } = app;
-  router.get('/myapi', controller.test.home.index);
-  router.get('/myapi/test', controller.test.home.test);
   router.get('/', controller.other.index);
   //all common 权限
   router.get('/qiniuToken',controller.qiniu.getToken)

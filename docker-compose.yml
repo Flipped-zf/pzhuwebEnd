@@ -1,38 +1,66 @@
 version: "3.7"
 
 services:
-  app:
+  # app:
+  #   depends_on: 
+  #   - mysql
+  #   image: tommyzf/backpzhuweb
+  #   build: .
+  #   ports:
+  #     - "7001:7001"
+  #   volumes: 
+  #     - pzhuweb-back-data:/app
+  #   networks:
+  #     - pzhuweb-network
+
+  # mysql:
+  #   image: mysql:8
+  #   container_name: pzhuwebmysql
+  #   ports: 
+  #     - "3306:3306"
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: pzhuweb2
+  #     # 覆盖默认命令
+  #   command:
+  #     # 设置协议认证方式(加密方式)
+  #     --default-authentication-plugin=mysql_native_password
+  #   volumes:
+  #     - pzhuweb-mysql-data:/var/lib/mysql
+  #     - ./mysql:/docker-entrypoint-initdb.d
+  eggserver:
     depends_on: 
-    - mysql
-    # image: node:12-alpine
-    # command: sh -c "yarn install && yarn run dev"
-    # ports:
-    #   - 7001:7001
-    # working_dir: /app
-    # volumes:
-    #   - ./:/app
+      - mysql
     image: tommyzf/backpzhuweb
     build: .
-    ports:
-      - "7001:7001"
-    volumes: 
-      - pzhuweb-back-data:/app
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: secret
-      MYSQL_DB: pzhuweb2
-
   mysql:
-    image: mysql:5.7
+    image: mysql:8
     container_name: pzhuwebmysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pzhuweb2
+      # 覆盖默认命令
+    command:
+      # 设置协议认证方式(加密方式)
+      --default-authentication-plugin=mysql_native_password
     volumes:
       - pzhuweb-mysql-data:/var/lib/mysql
-      - ./mysql:/docker-entrypoint-initdb.d/
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: pzhuweb2
-
+      - ./mysql:/docker-entrypoint-initdb.d
+  nginx:
+    depends_on: 
+      - eggserver
+    restart: always
+    image: nginx
+    # container_name: pzhuwebnginx
+    ports:
+      - 8888:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ../fontpage:/usr/share/nginx/fontpage
+      - ../endpage:/usr/share/nginx/endpage
 volumes:
   pzhuweb-mysql-data:
-  pzhuweb-back-data:
+#   pzhuweb-back-data:
+# networks:
+#   pzhuweb-network:
+#     driver: bridge

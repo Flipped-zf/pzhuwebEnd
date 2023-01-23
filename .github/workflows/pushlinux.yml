@@ -26,5 +26,5 @@ jobs:
           scp: |
             ./** => /home/www/pzhuweb/backserver
           last_ssh: |
-            echo $LASTSSH
+            docker-compose up -d
 
