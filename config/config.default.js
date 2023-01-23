@@ -22,7 +22,7 @@ module.exports = appInfo => {
   // change to your own sequelize configurations
   config.sequelize = {
     dialect: 'mysql',
-    host: 'mysql', //127.0.0.1
+    host: '127.0.0.1', //mysql
     port: 3306,
     database: 'pzhuweb2',
     username: 'root',

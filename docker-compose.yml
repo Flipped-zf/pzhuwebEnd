@@ -1,36 +1,36 @@
 version: "3.7"
 
 services:
-  eggserver:
-    depends_on: 
-    - mysql
-    image: tommyzf/backpzhuweb
-    build: .
-
-  mysql:
-    image: mysql:8
-    container_name: pzhuwebmysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: pzhuweb2
-      # 覆盖默认命令
-    command:
-      # 设置协议认证方式(加密方式)
-      --default-authentication-plugin=mysql_native_password
-    volumes:
-      - pzhuweb-mysql-data:/var/lib/mysql
-      - ./mysql:/docker-entrypoint-initdb.d
   # eggserver:
   #   depends_on: 
-  #     - mysql
+  #   - mysql
   #   image: tommyzf/backpzhuweb
   #   build: .
 
   # mysql:
   #   image: mysql:8
   #   container_name: pzhuwebmysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: pzhuweb2
+  #     # 覆盖默认命令
+  #   command:
+  #     # 设置协议认证方式(加密方式)
+  #     --default-authentication-plugin=mysql_native_password
   #   volumes:
   #     - pzhuweb-mysql-data:/var/lib/mysql
+  #     - ./mysql:/docker-entrypoint-initdb.d
+  eggserver:
+    depends_on: 
+      - mysql
+    image: tommyzf/backpzhuweb
+    build: .
+
+  mysql:
+    image: mysql:8
+    container_name: pzhuwebmysql
+    volumes:
+      - pzhuweb-mysql-data:/var/lib/mysql
 
   nginx:
     depends_on: 
