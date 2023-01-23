@@ -1,38 +1,12 @@
 version: "3.7"
 
 services:
-  # app:
-  #   depends_on: 
-  #   - mysql
-  #   image: tommyzf/backpzhuweb
-  #   build: .
-  #   ports:
-  #     - "7001:7001"
-  #   volumes: 
-  #     - pzhuweb-back-data:/app
-  #   networks:
-  #     - pzhuweb-network
-
-  # mysql:
-  #   image: mysql:8
-  #   container_name: pzhuwebmysql
-  #   ports: 
-  #     - "3306:3306"
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
-  #     MYSQL_DATABASE: pzhuweb2
-  #     # 覆盖默认命令
-  #   command:
-  #     # 设置协议认证方式(加密方式)
-  #     --default-authentication-plugin=mysql_native_password
-  #   volumes:
-  #     - pzhuweb-mysql-data:/var/lib/mysql
-  #     - ./mysql:/docker-entrypoint-initdb.d
-  eggserver:
+  app:
     depends_on: 
-      - mysql
+    - mysql
     image: tommyzf/backpzhuweb
     build: .
+
   mysql:
     image: mysql:8
     container_name: pzhuwebmysql
@@ -46,6 +20,18 @@ services:
     volumes:
       - pzhuweb-mysql-data:/var/lib/mysql
       - ./mysql:/docker-entrypoint-initdb.d
+  # eggserver:
+  #   depends_on: 
+  #     - mysql
+  #   image: tommyzf/backpzhuweb
+  #   build: .
+
+  # mysql:
+  #   image: mysql:8
+  #   container_name: pzhuwebmysql
+  #   volumes:
+  #     - pzhuweb-mysql-data:/var/lib/mysql
+
   nginx:
     depends_on: 
       - eggserver
@@ -53,14 +39,10 @@ services:
     image: nginx
     # container_name: pzhuwebnginx
     ports:
-      - 8888:80
+      - 80:80
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ../fontpage:/usr/share/nginx/fontpage
       - ../endpage:/usr/share/nginx/endpage
 volumes:
   pzhuweb-mysql-data:
-#   pzhuweb-back-data:
-# networks:
-#   pzhuweb-network:
-#     driver: bridge
