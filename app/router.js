@@ -85,6 +85,12 @@ module.exports = app => {
   router.get('/fontapi/delUserArticle/:id',controller.userpage.delUserArticle)
   router.post('/fontapi/uploadArticleResource',controller.articleEdit.uploadArticleResource)
   router.get('/fontapi/getMediaItems',controller.articleEdit.getMediaItems)
+
+  router.post('/fontapi/delUserCollect', controller.userpage.delUserCollect)
+  router.post('/fontapi/collectArticle', controller.article.collectArticle)
+  router.post('/fontapi/cancelCollect', controller.article.cancelCollect)
+
+  router.get('/fontapi/logout', controller.login.logout)
   //无权限  
   router.get('/homeinfo', controller.home.getHomeInfo); 
   router.get('/homeuserinfo', controller.home.getHomeuser);

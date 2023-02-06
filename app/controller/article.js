@@ -5,6 +5,8 @@ const Controller = require('egg').Controller;
 class Article extends Controller {
   async getArticle() {
     const { ctx, app } = this;
+    const { Op } = app.Sequelize;
+    const userid = ctx.session.userid;
     try {
       let  beg, end, index, keywords ;
       beg = parseInt(ctx.params.beg);
@@ -13,31 +15,31 @@ class Article extends Controller {
       keywords = ctx.params.keywords === 'null' ? '':ctx.params.keywords;
       const table = 'Technology';
       const table1 = 'Article';
-      const params = { 
-        include: [
-          {
-            model: app.model.Menu,
+      const params =  { 
+          include: [
+            {
+              model: app.model.Menu,
+            },
+            {
+              model: app.model.Technology,
+            },
+            {
+              model: app.model.UserInfo,
+              attributes: ['avatar'],
+              include: [
+                {
+                  model: app.model.User,
+                  attributes: ['name'],
+                },
+              ],
+            },
+          ],
+          attributes: { exclude: ['context', 'raws'] },
+          where: {
+            status: 1,
           },
-          {
-            model: app.model.Technology,
-          },
-          {
-            model: app.model.UserInfo,
-            attributes: ['avatar'],
-            include: [
-              {
-                model: app.model.User,
-                attributes: ['name'],
-              },
-            ],
-          },
-        ],
-        attributes: { exclude: ['context', 'raws'] },
-        where: {
-          status: 1,
-        },
-        order: [['created_at', 'DESC']],
-      };
+          order: [['created_at', 'DESC']],
+        };
       const params1 = {
         include: [
           {
@@ -107,24 +109,33 @@ class Article extends Controller {
   async collectArticle() {
     const { ctx } = this;
     try {
-      const token = ctx.header.authorization;
-      const author = await ctx.service.jwt.verifyToken(token);
-      if (!author) {
-        ctx.status = 403;
-      } else {
-        const { id } = ctx.request.body;
-        const userid = ctx.session.userid;
-        const table = 'Favorite';
-        const params = {
-          articleid: id,
-          userid,
+      const { id } = ctx.request.body;
+      const userid = ctx.session.userid;
+      const table = 'Favorite';
+      const params = {
+        articleid: id,
+        userid,
+      };
+      const params2 = {
+        where: params
+      }
+      const collect = await ctx.service.mysql.findAll(params2,table)
+      console.log(collect.length)
+      if(collect.length) {
+        ctx.status = 200;
+        ctx.body = {
+          success: 1,
+          message: '文章已收藏'
         };
+      } else {
         await ctx.service.mysql.create(params, table);
         ctx.status = 200;
         ctx.body = {
           success: 1,
+          message: '收藏成功'
         };
       }
+
     } catch (err) {
       console.log(err);
       ctx.status = 404;
@@ -133,27 +144,22 @@ class Article extends Controller {
   async cancelCollect() {
     const { ctx } = this;
     try {
-      const token = ctx.header.authorization;
-      const author = await ctx.service.jwt.verifyToken(token);
-      if (!author) {
-        ctx.status = 403;
-      } else {
-        const { id } = ctx.request.body;
-        const userid = ctx.session.userid;
-        const table = 'Favorite';
-        const params = {
-          where: {
-            articleid: id,
-            userid,
-          },
-        };
-        const favorite = await ctx.service.mysql.findAll(params, table);
-        await favorite[0].destroy();
-        ctx.status = 200;
-        ctx.body = {
-          success: 1,
-        };
-      }
+      const { id } = ctx.request.body;
+      const userid = ctx.session.userid;
+      const table = 'Favorite';
+      const params = {
+        where: {
+          articleid: id,
+          userid,
+        },
+      };
+      const favorite = await ctx.service.mysql.findAll(params, table);
+      await favorite[0].destroy();
+      ctx.status = 200;
+      ctx.body = {
+        success: 1,
+        message: '已取消收藏'
+      };
     } catch (err) {
       console.log(err);
       ctx.status = 404;

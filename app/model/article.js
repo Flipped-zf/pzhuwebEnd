@@ -66,6 +66,7 @@ module.exports = app => {
     }
   );
   Article.associate = function() {
+    app.model.Article.hasMany(app.model.Favorite, { foreignKey: 'articleid', sourceKey: 'id' });
     app.model.Article.hasMany(app.model.Media, { foreignKey: 'articleid', sourceKey: 'id' });
     app.model.Article.hasMany(app.model.Favorite, { foreignKey: 'articleid', sourceKey: 'id' });
     app.model.Article.belongsTo(app.model.UserInfo, { foreignKey: 'userid', targetKey: 'id' });

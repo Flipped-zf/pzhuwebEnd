@@ -6,6 +6,8 @@ class ArticleInfo extends Controller {
   async getArticleInfo() {
     const { ctx, app } = this;
     const { Op } = app.Sequelize;
+    const userid = ctx.session.userid;
+    let iscollect = false;
     try {
       const  id  = ctx.params.id;
       const table = 'Article';
@@ -33,6 +35,20 @@ class ArticleInfo extends Controller {
           status: 1
         }
       };
+      if(userid) {
+        const params2 = {
+          where: {
+            articleid: id,
+            userid,
+          },
+        }
+        const rescollect = await ctx.service.mysql.findAll(params2,'Favorite');
+        if(rescollect.length) {
+          iscollect = true;
+        }
+      }
+
+
       const article = await ctx.service.mysql.findAll(params, table);
       if (article.length === 0) {
         ctx.status = 200;
@@ -61,7 +77,8 @@ class ArticleInfo extends Controller {
         success: 1,
         data: {
           article,
-          recommend
+          recommend,
+          iscollect
         }
       };
     } catch (err) {

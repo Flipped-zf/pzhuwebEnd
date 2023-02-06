@@ -212,5 +212,14 @@ class Login extends Controller {
 
 
   }
+  async logout() {
+    const {ctx} = this;
+    ctx.session.userid = 0;
+    ctx.status = 200;
+    ctx.body = {
+      success: 1,
+      message: '成功退出'
+    };
+  }
 }
 module.exports = Login;

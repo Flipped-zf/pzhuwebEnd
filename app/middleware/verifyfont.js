@@ -7,6 +7,7 @@ module.exports = () => {
     if(ctx.service.jwt.verifyToken(token)) {
       await next();
     }else {
+      ctx.session.userid = 0
       ctx.status = 403;
       ctx.body = {
         message: '亲登录'

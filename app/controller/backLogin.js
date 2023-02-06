@@ -6,6 +6,7 @@ const code = require("svg-captcha");
 class Login extends Controller {
   async adminLogin() {
     const { ctx } = this;
+    //-1 删除 0 审核 1 普通 2 超级 3 管理员
     try {
       const { id, password,code } = ctx.request.body;
       if(code.toLowerCase() !== ctx.session.backcode.toLowerCase()) {

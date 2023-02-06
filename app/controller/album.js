@@ -21,12 +21,19 @@ class AlbumController extends Controller {
       ],
       where: {
         status: 1,
-        type: parseInt(type) || { [Op.ne]: 0 }
+        type: parseInt(type)
       }
     };
     try {
       const albums = await ctx.service.mysql.findAll(params, albumTable);
-      const photos = await ctx.service.mysql.findAll({ where: { status: { [Op.ne]: 0 } } }, 'Photo');
+      let albumTypes = await ctx.service.mysql.findAll({ where: { status: 1,id:{[Op.ne]: 0 } }}, 'AlbumType');
+      albumTypes = albumTypes.map(albumType => {
+        return { 
+          label: albumType.name, 
+          value: albumType.id
+        }
+      })
+      const photos = await ctx.service.mysql.findAll({ where: { status: 1 } }, 'Photo');
       const photoNum = photos.reduce((result, photo) => {
         if (!result[photo.album_id]) {
           result[photo.album_id] = 0;
@@ -40,7 +47,14 @@ class AlbumController extends Controller {
           data: {
             albums,
             photoNum,
+            albumTypes
           }
+        };
+      } else {
+        ctx.status = 200;
+        ctx.body = {
+          success: 1,
+          message: '暂无无相册'
         };
       }
     } catch (error) {

@@ -592,9 +592,11 @@ class User extends Controller {
               },
               {
                 model: app.model.Menu,
+                attributes: ['id','name']
               },
               {
                 model: app.model.Technology,
+                attributes: ['id','name']
               },
             ],
           },
@@ -709,33 +711,30 @@ class User extends Controller {
   async delUserCollect() {
     const { ctx } = this;
     try {
-      const token = ctx.get('Authorizationfont');
-      const author = await ctx.service.jwt.verifyToken(token);
-      if (!author) {
-        ctx.status = 403;
-      } else {
-        const { id } = ctx.request.body;
-        const table = 'Favorite';
-        const userid = ctx.session.userid;
-        const params = {
-          where: {
-            id,
-            userid
-          }
-        };
-        const collect = await ctx.service.mysql.findAll(params, table);
-        if (collect.length === 0) {
-          ctx.status = 200;
-          ctx.body = {
-            success: 0,
-          };
+      const { id } = ctx.request.body;
+      const table = 'Favorite';
+      const userid = ctx.session.userid;
+      const params = {
+        where: {
+          id,
+          userid
         }
-        await collect[0].destroy();
+      };
+      const collect = await ctx.service.mysql.findAll(params, table);
+      if (collect.length === 0) {
         ctx.status = 200;
         ctx.body = {
-          success: 1,
+          success: 0,
+          message: '文章不存在！'
         };
+        return
       }
+      await collect[0].destroy();
+      ctx.status = 200;
+      ctx.body = {
+        success: 1,
+        message: '删除成功！'
+      };
     } catch (err) {
       ctx.status = 404;
       console.log(err);

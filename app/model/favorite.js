@@ -19,8 +19,6 @@ module.exports = app => {
           model: 'Article',
         },
       },
-      created_at: DATE,
-      updated_at: DATE,
     },
     {
       underscored: true,
