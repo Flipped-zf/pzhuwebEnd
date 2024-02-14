@@ -3,3 +3,10 @@
 include可以深度写
 
 for of 可以await
+
+docker compose up -d
+docker images
+docker rmi -
+
+docker ps -a
+docker rm —
