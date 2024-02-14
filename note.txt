@@ -10,3 +10,5 @@ docker rmi -
 
 docker ps -a
 docker rm —
+
+docker rmi -f $(docker images -qa)
